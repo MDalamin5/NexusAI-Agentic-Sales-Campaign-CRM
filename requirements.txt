@@ -2,3 +2,6 @@ langchain
 langgraph
 pydantic
 pandas
+dotenv
+langchain-openai
+langchain-groq
