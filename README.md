@@ -46,7 +46,7 @@ The system utilizes six specialized agents to handle the end-to-end sales cycle:
 
 *   **Orchestration:** [LangGraph](https://www.langchain.com/langgraph) (Stateful Multi-Agent workflows)
 *   **Framework:** [LangChain](https://www.langchain.com/)
-*   **LLMs:** Supported via **Groq** (Llama 3.1) and **OpenAI** (GPT-4o-mini)
+*   **LLMs:** Supported via **Groq** (Qwen32b) and **OpenAI** (GPT-4o-mini)
 *   **API:** [FastAPI](https://fastapi.tiangolo.com/) (Asynchronous background tasks)
 *   **Database/Storage:** Pandas (Persistence via Enriched CSV)
 *   **Infrastructure:** Docker & Docker Compose
@@ -71,10 +71,29 @@ The system utilizes six specialized agents to handle the end-to-end sales cycle:
 2.  **Configure Environment Variables:**
     Rename `.env.example` to `.env` and add your keys:
     ```bash
-    MODEL_PROVIDER=groq # or openai
-    GROQ_API_KEY=your_key_here
+    # Options: 'openai' or 'groq'
+    # MODEL_PROVIDER=openai
+    MODEL_PROVIDER=groq
+
+    # Your API Keys (Replace with your actual keys)
+    OPENAI_API_KEY=sk-your-openai-api-key (optional)
+    GROQ_API_KEY=gsk_your_groq_api_key
+
+    # --- SMTP CONFIGURATION ---
+    # Use 'localhost' if running main.py directly on your machine.
+    # Use 'mailhog' if running via Docker Compose.
+    # SMTP_HOST=localhost
     SMTP_HOST=mailhog
     SMTP_PORT=1025
+    SENDER_EMAIL=outreach@nexusai.com
+
+    # --- DATA PATHS ---
+    INPUT_CSV_PATH=data/lead.csv
+    OUTPUT_CSV_PATH=data/enriched_leads.csv
+    REPORT_PATH=reports/campaign_summary.md
+
+    # This ensures logs appear in your terminal immediately
+    PYTHONUNBUFFERED=1
     ```
 
 3.  **Launch the System:**

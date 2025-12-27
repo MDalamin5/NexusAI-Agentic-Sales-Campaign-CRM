@@ -1,75 +1,10 @@
-# import pandas as pd
-# import os
-# from fastapi import FastAPI, BackgroundTasks
-# from src.graph import create_nexus_graph
-# from src.llm_factory import get_llm
-# from src.prompts import CAMPAIGN_SUMMARY_PROMPT
-
-# app = FastAPI(title="NexusAI CRM")
-# nexus_graph = create_nexus_graph()
-
-# # def run_campaign_logic():
-# #     df = pd.read_csv("data/lead.csv")
-# #     results = []
-# #     for _, row in df.iterrows():
-# #         state = {"lead_data": row.to_dict(), "status": "Pending"}
-# #         final_state = nexus_graph.invoke(state)
-# #         results.append(final_state)
-    
-# #     # Save CSV
-# #     enriched_df = pd.DataFrame(results)
-# #     enriched_df.to_csv("data/enriched_leads.csv", index=False)
-    
-# #     # Generate Report
-# #     llm = get_llm(0)
-# #     report = llm.invoke([("system", CAMPAIGN_SUMMARY_PROMPT), ("human", str(results))])
-# #     with open("reports/campaign_summary.md", "w") as f:
-# #         f.write(report.content)
-
-# def run_campaign_logic():
-#     try:
-#         print("📂 Loading leads...")
-#         df = pd.read_csv("data/lead.csv")
-#         results = []
-        
-#         for i, row in df.iterrows():
-#             print(f"🤖 Processing lead {i+1}/20: {row['Email']}")
-#             state = {"lead_data": row.to_dict(), "status": "Pending"}
-            
-#             # This is where the LLM calls happen
-#             final_state = nexus_graph.invoke(state)
-#             results.append(final_state)
-            
-#             print(f"✅ Email drafted and simulated for {row['Email']}")
-
-#         # Save result
-#         enriched_df = pd.DataFrame(results)
-#         enriched_df.to_csv("data/enriched_leads.csv", index=False)
-#         print("💾 Enriched CSV saved.")
-
-#         # Generate Report
-#         print("📊 Generating final report...")
-#         llm = get_llm(0)
-#         report = llm.invoke([("system", CAMPAIGN_SUMMARY_PROMPT), ("human", str(results))])
-#         with open("reports/campaign_summary.md", "w") as f:
-#             f.write(report.content)
-        
-#     except Exception as e:
-#         print(f"❌ ERROR IN BACKGROUND TASK: {e}")
-
-# @app.post("/run-campaign")
-# async def trigger_campaign(bt: BackgroundTasks):
-#     bt.add_task(run_campaign_logic)
-#     return {"message": "Campaign started. Processing 20 leads..."}
-
-
-
 import os
 import pandas as pd
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from src.graph import create_nexus_graph
 from src.llm_factory import get_llm
 from src.prompts import CAMPAIGN_SUMMARY_PROMPT
+import re
 
 # 1. Initialize FastAPI
 app = FastAPI(
@@ -164,10 +99,11 @@ def run_campaign_logic():
             ("human", f"Summarize these campaign results:\n{str(summary_input)}")
         ])
         
+        final_report_content = re.sub(r'<think>.*?</think>', '', report_response.content, flags=re.DOTALL).strip()
         # Save the Markdown report
         report_path = "reports/campaign_summary.md"
         with open(report_path, "w", encoding="utf-8") as f:
-            f.write(report_response.content)
+            f.write(final_report_content)
             
         print(f"🏁 Campaign Complete! Report available at {report_path}")
 
