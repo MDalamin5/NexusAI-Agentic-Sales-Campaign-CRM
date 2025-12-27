@@ -5,3 +5,4 @@ pandas
 dotenv
 langchain-openai
 langchain-groq
+fastapi[standard]
