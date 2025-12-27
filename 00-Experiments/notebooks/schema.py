@@ -19,3 +19,16 @@ class EmailDraft(BaseModel):
     subject: str = Field(description="A catchy, personalized subject line.")
     body: str = Field(description="The personalized email body. Use HTML tags for better formatting.")
     sender_name: str = Field(description="The name of the sender (e.g., 'NexusAI Sales Team').")
+
+
+class SimulatedResponse(BaseModel):
+    reply_text: str = Field(description="The content of the email reply from the lead.")
+    sentiment: str = Field(description="The general tone of the reply (Positive, Neutral, Negative).")
+
+
+
+class ResponseCategory(BaseModel):
+    category: Literal["Interested", "Not Interested", "Neutral", "Auto-Reply"] = Field(
+        description="The classification of the lead's response."
+    )
+    reasoning: str = Field(description="A brief explanation of why this category was chosen.")
