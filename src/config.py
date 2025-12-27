@@ -13,7 +13,7 @@ class Config:
     
     # Model Names
     OPENAI_MODEL = "gpt-4o-mini"
-    GROQ_MODEL = "llama-3.1-70b-versatile"
+    GROQ_MODEL = "qwen/qwen3-32b"
 
     # SMTP Settings
     SMTP_HOST = os.getenv("SMTP_HOST", "localhost")
